@@ -5,13 +5,11 @@ module.exports = {
         date
       ).getFullYear()}`;
     },
-    // format words as plural if multiple
+    // recognize multiple/singular of words
     format_plural: (word, amount) => {
         if (amount !== 1) {
           return `${word}s`;
         }
-    
         return word;
     }
-  }
-};
+}

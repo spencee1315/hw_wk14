@@ -1,4 +1,4 @@
-const { Model, DataTypes } =require('sequelize');
+const { Model, DataTypes } = require('sequelize');
 const sequelize = require('../config/connection');
 
 // creating comment model
@@ -50,3 +50,5 @@ Comment.init(
         modelName: 'comment'
     }
 );
+
+module.exports = Comment;

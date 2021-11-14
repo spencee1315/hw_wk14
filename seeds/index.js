@@ -1,28 +1,23 @@
-const { Post } = require('../models');
+const postData = require('./postData');
+const userData = require('./userData');
+const commentData = require('./commentData');
 
-const postData = [
-    {
-        title: "Blog Post #1.",
-        content: "This is a sample blog post.",
-        user_id: 1
-    },
-    {
-        title: "Blog Post #2.",
-        content: "This is another sample blog post.",
-        user_id: 2
-    },
-    {
-        title: "Blog Post #3.",
-        content: "This is an additional sample blog post.",
-        user_id: 3
-    },
-    {
-        title: "Blog Post #4.",
-        content: "This is yet another sample blog post.",
-        user_id: 4
-    },
-]
+const sequelize = require('../config/connection');
 
-const postData = () => Post.bulkCreate(postData);
+const seedDatabase = async () => {
+    await sequelize.sync({ force: true });
+    console.log('\n- Database Seeded -\n');
 
-module.exports = postData;
+    await userData();
+    console.log('\n- User Data Seeded -\n');
+
+    await postData();
+    console.log('\n- Post Data Seeded -\n');
+
+    await commentData();
+    console.log('\n- Comment Data Seeded -\n');
+
+    process.exit(0);
+};
+
+seedDatabase();

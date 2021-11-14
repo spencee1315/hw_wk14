@@ -7,14 +7,14 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
     "watch": "nodemon server.js",
-    "seed": "node seeds/seed.js"
+    "seed": "node seeds/index.js"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/spencee1315/hw_wk14"
   },
   "keywords": [],
-  "author": "",
+  "author": "Elliott Spencer",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/spencee1315/hw_wk14/issues"

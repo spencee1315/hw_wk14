@@ -5,7 +5,7 @@ const sequelize = require('../config/connection');
 class Post extends Model {}
 
 // creating fields and columns for the post model
-Project.init(
+Post.init(
   {
     id: {
       type: DataTypes.INTEGER,
@@ -19,6 +19,7 @@ Project.init(
     },
     post_content: {
       type: DataTypes.STRING,
+      allowNull: true
     },
     date_created: {
       type: DataTypes.DATE,

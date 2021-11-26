@@ -74,6 +74,7 @@ router.get('/:id', (req, res) => {
       });
 });
 
+// using withAuth to restrict access
 // post create
 router.post('/', withAuth, (req, res) => {
   Post.create({
@@ -88,6 +89,7 @@ router.post('/', withAuth, (req, res) => {
     });
 });
 
+// using withAuth to restrict access
 // post update
 router.put('/:id', withAuth, (req, res) => {
   Post.update({
@@ -109,6 +111,27 @@ router.put('/:id', withAuth, (req, res) => {
       .catch(err => {
         console.log(err);
         res.status(500).json(err); 
+      });
+});
+
+// using withAuth to restrict access
+// post delete/destroy
+router.delete('/:id', withAuth, (req, res) => {
+  Post.destroy({
+    where: {
+      id: req.params.id
+    }
+  })
+    .then(dbPostData => {
+      if (!dbPostData) {
+        res.status(404).json({ message: 'Error: post id not found!'});
+        return;
+      }
+      res.json(dbPostData);
+    })
+      .catch(err => {
+        console.log(err);
+        res.status(500).json(err);
       });
 });
 

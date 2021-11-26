@@ -37,6 +37,7 @@ router.get('/', (req, res) => {
     });
 });
 
+// get, post.findOne
 router.get('/:id', (req, res) => {
   Post.findOne({
     where: {
@@ -71,6 +72,20 @@ router.get('/:id', (req, res) => {
         console.log(err);
         res.status(500).json(err);
       });
+});
+
+// post create
+router.post('/', withAuth, (req, res) => {
+  Post.create({
+    title: req.body.title,
+    post_content: req.body.post_content,
+    user_id: req.session.user_id
+  })
+    .then(dbPostData => res.json(dbPostData))
+    .catch(err => {
+      console.log(err);
+      res.status(500).json(err);
+    });
 });
 
 module.exports = router;

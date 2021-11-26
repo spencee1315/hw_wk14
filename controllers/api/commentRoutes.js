@@ -11,6 +11,7 @@ router.get('/', (req, res) => {
         });
 });
 
+// use withAuth to restrict access
 router.post('/', withAuth, (req, res) => {
     // check the session
     if (req.session) {

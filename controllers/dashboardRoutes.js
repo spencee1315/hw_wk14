@@ -87,4 +87,41 @@ router.get('/edit/:id', withAuth, (req, res) => {
         });
 });
 
+router.get('/create/', withAuth, (req, res) => {
+    Post.findAll({
+        where: {
+            // grab ID of the user from the current session
+            user_id: req.session.user_id
+        },
+        attributes: [
+            'id',
+            'title',
+            'created_at',
+            'post_content'
+        ],
+        include: [
+            {
+                model: Comment,
+                attributes: ['id', 'comment_tet', 'post_id', 'user_id', 'created_at'],
+                include: {
+                    model: User,
+                    attributes: ['username', 'github']
+                }
+            },
+            {
+                model: User,
+                attributes: ['username', 'github']
+            }
+        ]
+    })
+        .then(dbPostData => {
+            // serialize the data before passing into the template
+            const posts = dbPostData.map(post => post.get({ plain: true }));
+            res.render('create-post', { posts, loggedIn: true });
+        })
+        .catch(err => {
+            console.log(err);
+        });
+});
+
 module.exports = router;

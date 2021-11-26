@@ -2,54 +2,50 @@ const router = require('express').Router();
 const { Post, User, Comment } = require('../models');
 const sequelize = require('../config/connection');
 
-router.get('/', async (req, res) => {
-  try {
-    // Get all Posts and JOIN with user data
-    console.log("PostData1")
-    const postData = await Post.findAll({
-      include: [
-        {
+router.get('/Post/:id', (req, res) => {
+  Post.findOne({
+    where: {
+      id: req.params.id
+    },
+    attributes: [
+      'id',
+      'title',
+      'created_at',
+      'post_content'
+    ],
+    include: [
+      {
+        model: Comment,
+        attributes: ['id', 'comment_text', 'post_id', 'user_id', 'created_at'],
+        include: {
           model: User,
-          attributes: ['username'],
-        },
-      ],
-    });
-    console.log("PostData2")
+          attributes: ['username', 'github']
+        }
+      },
+      {
+        model: User,
+        attributes: ['username', 'github']
+      } 
+    ]
+  })
+    .then(dbPostData => {
+      if (!dbPostData) {
+        res.status(404).json({ message: 'Error: post id not found!'});
+        return;
+      }
 
-    // Serialize data so the template can read it
-    const Posts = postData.map((post) => post.get({ plain: true }));
+      // serialize the data, then pass into the template
+      const post = dbPostData.get({ plain: true });
 
-    // Pass serialized data and session flag into template
-    console.log("render")
-    res.render('homepage', { 
-      Posts, 
-      logged_in: req.session.logged_in 
-    });
-  } catch (err) {
-    res.status(500).json(err);
-  }
-});
-
-router.get('/Post/:id', async (req, res) => {
-  try {
-    const postData = await Post.findByPk(req.params.id, {
-      include: [
-        {
-          model: User,
-          attributes: ['username'],
-        },
-      ],
-    });
-
-    const post = postData.get({ plain: true });
-
-    res.render('Post', {
-      ...post,
-      logged_in: req.session.logged_in
-    });
-  } catch (err) {
-    res.status(500).json(err);
-  }
+      res.render('single-post', {
+        post,
+        logged_in: req.session.logged_in
+      });
+    })
+      .catch(err => {
+        console.log(err);
+        res.status(500).json(err);
+      });
 });
 
 router.get('/', (req, res) => {
@@ -93,7 +89,7 @@ router.get('/', (req, res) => {
 router.get('/login', (req, res) => {
   // If the user is already logged in, redirect the request to another route
   if (req.session.logged_in) {
-    res.redirect('/profile');
+    res.redirect('/');
     return;
   }
 
@@ -103,7 +99,7 @@ router.get('/login', (req, res) => {
 router.get('/signup', (req, res) => {
   // If the user is already logged in, redirect the request to another route
   if (req.session.logged_in) {
-    res.redirect('/profile');
+    res.redirect('/');
     return;
   }
 

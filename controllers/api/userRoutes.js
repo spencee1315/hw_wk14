@@ -2,7 +2,8 @@ const router = require('express').Router();
 const { User, Post, Comment } = require('../../models');
 const withAuth = require('../../utils/auth');
 
-// GET all
+// get all
+// route: /api/users
 router.get('/', (req, res) => {
   // Access our User model and run .findall() method
   User.findAll({
@@ -15,7 +16,8 @@ router.get('/', (req, res) => {
     })
 });
 
-// GET one
+// get one
+// route: /api/users/id
 router.get('/:id', (req, res) => {
   // Access our User model and run .findone() method
   User.findOne({
@@ -40,7 +42,7 @@ router.get('/:id', (req, res) => {
   })
     .then(dbUserData => {
       if (!dbUserData) {
-        res.status(400).json({ message: 'No user can be found with this id' });
+        res.status(400).json({ message: 'Error: user id cannot be found!' });
         return;
       }
       res.json(dbUserData);
@@ -51,7 +53,8 @@ router.get('/:id', (req, res) => {
     });
 });
 
-// POST /api/users
+// post, create
+// route: /api/users
 router.post('/', (req, res) => {
   User.create({
     username: req.body.username,
@@ -71,7 +74,7 @@ router.post('/', (req, res) => {
   });
 });
 
-// LOGIN
+// post, login, findone
 router.post('/login', (req, res) => {
   User.findOne({
     where: {
@@ -79,14 +82,14 @@ router.post('/login', (req, res) => {
     }
   }) .then(dbUserData => {
       if (!dbUserData) {
-        res.status(400).json({ message: 'No user can be found with the email address entered!'});
+        res.status(400).json({ message: 'Error: email address entered cannot be found!'});
         return;
       }
 
       const validPassword = dbUserData.checkPassword(req.body.password);
 
       if (!validPassword) {
-        res.status(400).json({ message: 'Incorrect password!' });
+        res.status(400).json({ message: 'Error: incorrect password!' });
         return;
       }
 
@@ -112,7 +115,9 @@ router.post('/logout', (req, res) => {
   }
 });
 
-// PUT one
+// put, update one
+// route /api/users/id
+// withAuth to restrict access
 router.put('/:id', withAuth, (req, res) => {
   User.update(req.body, {
     individualHooks: true,
@@ -122,7 +127,7 @@ router.put('/:id', withAuth, (req, res) => {
   })
   .then(dbUserData => {
     if (!dbUserData[0]) {
-      res.status(404).json({ message: 'No user can be found with this id'});
+      res.status(404).json({ message: 'Error: user id cannot be found!'});
       return;
     }
     res.json(dbUserData);
@@ -133,7 +138,8 @@ router.put('/:id', withAuth, (req, res) => {
   });
 });
 
-// DELETE one
+// delete, destroy one
+// withAuth to restrict access
 router.delete('/:id', withAuth, (req, res) => {
   User.destroy({
     where: {

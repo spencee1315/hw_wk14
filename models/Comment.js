@@ -35,11 +35,6 @@ Comment.init(
             validate: {
                 len: [1]
             }
-        },
-        date_created: {
-            type: DataTypes.DATE,
-            allowNull: false,
-            defaultValue: DataTypes.NOW,
         }
     },
     {

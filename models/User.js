@@ -25,10 +25,6 @@ User.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    twitter: {
-      type: DataTypes.STRING,
-      allowNull: true
-  },
     github: {
       type: DataTypes.STRING,
       allowNull: true
@@ -40,7 +36,7 @@ User.init(
       unique: true,
       validate: {
         isEmail: true,
-      },
+      }
     },
     // define a pw column
     password: {
@@ -48,8 +44,8 @@ User.init(
       allowNull: false,
       validate: {
         len: [8],
-      },
-    },
+      }
+    }
   },
   {
     hooks: {
@@ -62,13 +58,13 @@ User.init(
       beforeUpdate: async (updatedUserData) => {
         updatedUserData.password = await bcrypt.hash(updatedUserData.password, 10);
         return updatedUserData;
-      },
+      }
     },
     sequelize,
     timestamps: false,
     freezeTableName: true,
     underscored: true,
-    modelName: 'user',
+    modelName: 'user'
   }
 );
 
